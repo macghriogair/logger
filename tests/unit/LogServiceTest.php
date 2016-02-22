@@ -1,17 +1,17 @@
 <?php
 
-namespace MacGhriogair\Logger\Tests;
+namespace Macghriogair\Logger\Tests;
 
-use MacGhriogair\Logger\Logger;
-use MacGhriogair\Logger\Service;
+use Macghriogair\Logger\Logger;
+use Macghriogair\Logger\LogService;
 
-class ServiceTest extends \PHPUnit_Framework_TestCase
+class LogServiceTest extends \PHPUnit_Framework_TestCase
 {
     protected $service;
 
     public function setUp()
     {
-        $this->service = Service::getInstance();
+        $this->service = LogService::getInstance();
     }
 
     /** @test */
@@ -55,6 +55,6 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
 
     protected function getLoggerStub()
     {
-        return $this->getMock('MacGhriogair\Logger\LoggerInterface');
+        return $this->getMock('Macghriogair\Logger\LoggerInterface');
     }
 }

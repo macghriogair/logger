@@ -1,8 +1,8 @@
 <?php
 
-namespace MacGhriogair\Logger;
+namespace Macghriogair\Logger;
 
-class Service implements LoggerInterface
+class LogService implements LoggerInterface
 {
     protected static $instance = null;
 

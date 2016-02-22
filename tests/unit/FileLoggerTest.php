@@ -1,9 +1,9 @@
 <?php
 
-namespace MacGhriogair\Logger\Tests;
+namespace Macghriogair\Logger\Tests;
 
-use MacGhriogair\Logger\FileLogger;
-use MacGhriogair\Logger\Logger;
+use Macghriogair\Logger\FileLogger;
+use Macghriogair\Logger\Logger;
 
 class FileLoggerTest extends \PHPUnit_Framework_TestCase
 {

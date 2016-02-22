@@ -1,6 +1,6 @@
 <?php
 
-namespace MacGhriogair\Logger;
+namespace Macghriogair\Logger;
 
 abstract class Logger implements LoggerInterface
 {
