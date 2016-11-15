@@ -1,4 +1,4 @@
-A simple PHP LogService
+A PHP LogService that is PSR-3 compatible
 =======================
 
 Basic logging service that handles multiple logger implementations ( currently mail, stdOut, file).
@@ -26,5 +26,5 @@ Package under development.
     $service->addLogger(new ConsoleLogger(Logger::DEBUG));
 
     // 3. log something
-    $service->log('Log entry', Logger::WARN); // log w/ explicit level
+    $service->log(Logger::WARN, 'Log entry'); // log w/ explicit level
     $service->debug('Debug log entry'); // shorthand

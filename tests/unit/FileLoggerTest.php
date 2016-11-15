@@ -3,76 +3,98 @@
 namespace Macghriogair\Logger\Tests;
 
 use Macghriogair\Logger\FileLogger;
-use Macghriogair\Logger\Logger;
+use Psr\Log\LogLevel;
 
 class FileLoggerTest extends \PHPUnit_Framework_TestCase
 {
+    const LOG_FILE = 'testlog.txt';
+
     public function tearDown()
     {
-        exec('rm testlog.txt');
+        @unlink(self::LOG_FILE);
     }
 
     /** @test */
     public function it_has_a_loglevel()
     {
-        $logger = new FileLogger(Logger::INFO, 'testlog.txt');
+        $logger = new FileLogger(LogLevel::INFO, self::LOG_FILE);
 
-        $this->assertEquals(1, $logger->level);
+        $this->assertEquals(LogLevel::INFO, $logger->level);
     }
 
     /** @test */
     public function it_logs_to_a_file()
     {
-        $logger = new FileLogger(Logger::INFO, 'testlog.txt');
-        $logger->info('Hello.');
+        $logger = new FileLogger(LogLevel::INFO, self::LOG_FILE);
+        $logger->info('Hello');
 
-        $h = fopen('testlog.txt', 'r');
-        $buffer = fgets($h, 100);
-        $this->assertEquals('[INFO] Hello.', substr($buffer, 20, 13));
+        $this->assertLogHas('[INFO] Hello.');
     }
 
     /** @test */
     public function it_not_logs_levels_lower_than_defined()
     {
-        $logger = new FileLogger(Logger::WARN, 'testlog.txt');
-        $logger->info('Hello.');
+        $logger = new FileLogger(LogLevel::WARNING, self::LOG_FILE);
+        $logger->info('Hello');
 
-        $h = fopen('testlog.txt', 'r');
-        $buffer = fgets($h, 100);
-        $this->assertEquals('', $buffer);
+        $this->assertLogIsEmpty();
     }
 
     /** @test */
     public function it_logs_levels_equal_as_defined()
     {
-        $logger = new FileLogger(Logger::WARN, 'testlog.txt');
-        $logger->warn('Hello.');
+        $logger = new FileLogger(LogLevel::WARNING, self::LOG_FILE);
+        $logger->warning('Hello');
 
-        $h = fopen('testlog.txt', 'r');
-        $buffer = fgets($h, 100);
-        $this->assertEquals('[WARN] Hello.', substr($buffer, 20, 13));
+        $this->assertLogHas('[WARNING] Hello.');
     }
 
     /** @test */
     public function it_logs_levels_higher_than_defined()
     {
-        $logger = new FileLogger(Logger::WARN, 'testlog.txt');
-        $logger->error('Hello.');
+        $logger = new FileLogger(LogLevel::WARNING, self::LOG_FILE);
+        $logger->error('Hello');
 
-        $h = fopen('testlog.txt', 'r');
-        $buffer = fgets($h, 100);
-        $this->assertEquals('[ERROR] Hello.', substr($buffer, 20, 14));
+        $this->assertLogHas('[ERROR] Hello.');
     }
 
     /** @test */
     public function it_has_an_explicit_approach_with_same_result()
     {
+        $logger = new FileLogger(LogLevel::WARNING, self::LOG_FILE);
+        $logger->log(LogLevel::ERROR, 'Hello');
 
-        $logger = new FileLogger(Logger::WARN, 'testlog.txt');
-        $logger->log('Hello.', Logger::ERROR);
+        $this->assertLogHas('[ERROR] Hello.');
+    }
 
-        $h = fopen('testlog.txt', 'r');
+    /** @test */
+    public function it_interpolates_message_with_context()
+    {
+        $logger = new FileLogger(LogLevel::DEBUG, self::LOG_FILE);
+        $logger->log(LogLevel::DEBUG, 'Login attempt by {username}', ['username' => 'Bart Simpson']);
+
+        $this->assertLogHas('[DEBUG] Login attempt by Bart Simpson.');
+    }
+
+
+    protected function assertLogHas($expected)
+    {
+        $withoutTimestamp = substr($this->readLine(), 20, 100) ?: '';
+        $this->assertStringStartsWith($expected, $withoutTimestamp);
+
+    }
+
+    protected function assertLogIsEmpty()
+    {
+        $withoutTimestamp = substr($this->readLine(), 20, 100) ?: '';
+        $this->assertEquals('', $withoutTimestamp);
+    }
+
+    protected function readLine()
+    {
+        $h = fopen(self::LOG_FILE, 'r');
         $buffer = fgets($h, 100);
-        $this->assertEquals('[ERROR] Hello.', substr($buffer, 20, 14));
+        fclose($h);
+        return $buffer;
     }
 }

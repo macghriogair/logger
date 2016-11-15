@@ -2,10 +2,21 @@
 
 namespace Macghriogair\Logger;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
+
 class LogService implements LoggerInterface
 {
+    use LoggerTrait;
+
+    /**
+     * @var \Macghriogair\Logger\LogService
+     */
     protected static $instance = null;
 
+    /**
+     * @var array
+     */
     protected $loggers = array();
 
     /**
@@ -22,6 +33,9 @@ class LogService implements LoggerInterface
     {
     }
 
+    /**
+     * @return \Macghriogair\Logger\LogService
+     */
     public static function getInstance()
     {
         if (null === self::$instance) {
@@ -36,34 +50,14 @@ class LogService implements LoggerInterface
         return $this;
     }
 
-    public function log($message, $logLevel = 0)
+    public function log($level, $message, array $context = array())
     {
         array_walk(
             $this->loggers,
-            function ($l) use ($message, $logLevel) {
-                $l->log($message, $logLevel);
+            function (LoggerInterface $l) use ($message, $level) {
+                $l->log($message, $level);
             }
         );
         return $this;
-    }
-
-    public function debug($message)
-    {
-        return $this->log($message, Logger::DEBUG);
-    }
-
-    public function info($message)
-    {
-        return $this->log($message, Logger::INFO);
-    }
-
-    public function warn($message)
-    {
-        return $this->log($message, Logger::WARN);
-    }
-
-    public function error($message)
-    {
-        return $this->log($message, Logger::ERROR);
     }
 }

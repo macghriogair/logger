@@ -2,18 +2,19 @@
 
 namespace Macghriogair\Logger;
 
-class ConsoleLogger extends Logger
+class ConsoleLogger extends AbstractLogger
 {
     public $level;
     private $lineBreak;
 
     public function __construct($level)
     {
+        $this->validateLevel($level);
         $this->level = $level;
         $this->lineBreak = ('cli' === php_sapi_name()) ? PHP_EOL : '<br />';
     }
 
-    protected function handleRequest($message)
+    protected function process($message)
     {
         print($message);
     }
@@ -21,10 +22,11 @@ class ConsoleLogger extends Logger
     protected function resolveMessage($message, $levelName)
     {
         return sprintf(
-            "%s [%s] %s".$this->lineBreak,
+            "%s [%s] %s%s",
             date("d.m.Y H:i:s"),
             $levelName,
-            $message
+            $message,
+            $this->lineBreak
         );
     }
 }

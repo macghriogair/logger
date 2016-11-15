@@ -2,11 +2,13 @@
 
 namespace Macghriogair\Logger\Tests;
 
-use Macghriogair\Logger\Logger;
 use Macghriogair\Logger\LogService;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 class LogServiceTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var \Macghriogair\Logger\LogService */
     protected $service;
 
     public function setUp()
@@ -17,10 +19,10 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_accepts_a_logger_interface()
     {
-        $mailLoggerStub = $this->getLoggerStub();
+        $loggerStub = $this->getLoggerStub();
 
-        $this->service->addLogger($mailLoggerStub);
-        $this->service->log('Hello World', Logger::ERROR);
+        $this->service->addLogger($loggerStub);
+        $this->service->log('Hello World', LogLevel::ERROR);
     }
 
     /** @test */
@@ -30,10 +32,10 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $loggerMock->expects($this->once())
                      ->method('log')
-                     ->with($this->identicalTo('Hello World', Logger::ERROR));
+                     ->with($this->identicalTo('Hello World', LogLevel::ERROR));
 
         $this->service->addLogger($loggerMock);
-        $this->service->log('Hello World', Logger::ERROR);
+        $this->service->log(LogLevel::ERROR, 'Hello World');
     }
 
     /** @test */
@@ -44,17 +46,17 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $loggerMock->expects($this->once())
                      ->method('log')
-                     ->with($this->identicalTo('Hello World', Logger::INFO));
+                     ->with($this->identicalTo('Hello World', LogLevel::INFO));
         $loggerMock2->expects($this->once())
                      ->method('log')
-                     ->with($this->identicalTo('Hello World', Logger::INFO));
+                     ->with($this->identicalTo('Hello World', LogLevel::INFO));
 
         $this->service->addLogger($loggerMock)->addLogger($loggerMock2);
-        $this->service->log('Hello World', Logger::INFO);
+        $this->service->log(LogLevel::INFO, 'Hello World');
     }
 
     protected function getLoggerStub()
     {
-        return $this->getMock('Macghriogair\Logger\LoggerInterface');
+        return $this->getMock(LoggerInterface::class);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Macghriogair\Logger;
 
-class MailLogger extends Logger
+class MailLogger extends AbstractLogger
 {
     public $level;
 
@@ -10,11 +10,12 @@ class MailLogger extends Logger
 
     public function __construct($level, $subscribers)
     {
+        $this->validateLevel($level);
         $this->level = $level;
         $this->subscribers = $this->validateSubscribers($subscribers);
     }
 
-    protected function handleRequest($message)
+    protected function process($message)
     {
         array_walk(
             $this->subscribers,
