@@ -6,13 +6,17 @@ class MailLogger extends AbstractLogger
 {
     public $level;
 
-    private $subscribers = array();
+    protected $immediateRelease;
+    protected $subscribers = array();
 
-    public function __construct($level, $subscribers)
+    public function __construct($level, $subscribers, $immediateRelease = true)
     {
         $this->validateLevel($level);
         $this->level = $level;
+        $subscribers = $this->normalizeArray($subscribers);
         $this->subscribers = $this->validateSubscribers($subscribers);
+
+        $this->immediateRelease = $immediateRelease;
     }
 
     protected function process($message)
@@ -23,6 +27,7 @@ class MailLogger extends AbstractLogger
                 mail($recipient, 'Message from: ' . __CLASS__, $message);
             }
         );
+        return $this;
     }
 
     protected function resolveMessage($message, $levelName)
@@ -40,5 +45,10 @@ class MailLogger extends AbstractLogger
         return array_filter($subscribers, function ($email) {
             return filter_var($email, FILTER_VALIDATE_EMAIL);
         });
+    }
+
+    protected function normalizeArray($input)
+    {
+        return is_array($input) ? $input : array($input);
     }
 }
