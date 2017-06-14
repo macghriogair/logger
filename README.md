@@ -18,14 +18,15 @@ Package under development.
     use Macghriogair\Logger\LogService;
     use Macghriogair\Logger\ConsoleLogger;
     use Macghriogair\Logger\FileLogger;
+    use Psr\Log\LogLevel;
 
     // 1. get singleton instance
     $service = LogService::getInstance();
 
     // 2. add as many loggers as needed
-    $service->addLogger(new FileLogger(Logger::INFO, 'testlog.txt'));
-    $service->addLogger(new ConsoleLogger(Logger::DEBUG));
+    $service->addLogger(new FileLogger(LogLevel::INFO, 'testlog.txt'));
+    $service->addLogger(new ConsoleLogger(LogLevel::DEBUG));
 
     // 3. log something
-    $service->log(Logger::WARN, 'Log entry'); // log w/ explicit level
+    $service->log(LogLevel::WARN, 'Log entry'); // log w/ explicit level
     $service->debug('Debug log entry'); // shorthand
