@@ -11,5 +11,4 @@ namespace Macghriogair\Logger\Exception;
 
 class FileLoggerException extends \Exception
 {
-
 }

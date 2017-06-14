@@ -57,6 +57,6 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
     protected function getLoggerStub()
     {
-        return $this->getMock(LoggerInterface::class);
+        return $this->createMock(LoggerInterface::class);
     }
 }

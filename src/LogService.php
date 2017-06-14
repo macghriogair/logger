@@ -54,8 +54,8 @@ class LogService implements LoggerInterface
     {
         array_walk(
             $this->loggers,
-            function (LoggerInterface $l) use ($message, $level) {
-                $l->log($message, $level);
+            function (LoggerInterface $l) use ($message, $level, $context) {
+                $l->log($message, $level, $context);
             }
         );
         return $this;

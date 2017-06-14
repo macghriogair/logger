@@ -1,5 +1,6 @@
-A PHP LogService that is PSR-3 compatible
-=======================
+[![Build Status](https://travis-ci.org/macghriogair/logger.svg?branch=master)](https://travis-ci.org/macghriogair/logger)
+
+# A PHP LogService that is PSR-3 compatible
 
 Basic logging service that handles multiple logger implementations ( currently mail, stdOut, file).
 
